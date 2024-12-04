@@ -18,13 +18,17 @@ struct AddPasswordView: View {
                 
                 ZStack(alignment: .trailing) {
                     if showPassword {
-                        TextField("Password", text: $password)
+                        TextField("Contraseña", text: $password)
                     } else {
-                        SecureField("Password", text: $password)
+                        SecureField("Contraseña", text: $password)
                     }
                     
                     Button(action: {
-                        showPassword.toggle()
+                        if !showPassword {
+                            authenticateUser()
+                        } else {
+                            showPassword = false
+                        }
                     }) {
                         Image(systemName: showPassword ? "eye.slash" : "eye")
                             .foregroundColor(.gray)
@@ -51,6 +55,17 @@ struct AddPasswordView: View {
                 }
                 .disabled(title.isEmpty || username.isEmpty || password.isEmpty)
             )
+        }
+    }
+    
+    private func authenticateUser() {
+        Task {
+            let success = await BiometricAuthService.authenticate()
+            await MainActor.run {
+                if success {
+                    showPassword = true
+                }
+            }
         }
     }
 } 

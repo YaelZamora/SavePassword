@@ -3,20 +3,25 @@ import SwiftUI
 struct PasswordDetailView: View {
     let password: PasswordItem
     @State private var showPassword = false
+    @State private var isAuthenticating = false
     
     var body: some View {
         Form {
-            Section("Details") {
-                LabeledContent("Title", value: password.title)
-                LabeledContent("User", value: password.username)
+            Section("Detalles") {
+                LabeledContent("Título", value: password.title)
+                LabeledContent("Usuario", value: password.username)
                 
                 HStack {
-                    Text("Password")
+                    Text("Contraseña")
                     Spacer()
                     Text(showPassword ? password.password : "••••••••")
                         .foregroundColor(.gray)
                     Button(action: {
-                        showPassword.toggle()
+                        if !showPassword {
+                            authenticateUser()
+                        } else {
+                            showPassword = false
+                        }
                     }) {
                         Image(systemName: showPassword ? "eye.slash" : "eye")
                             .foregroundColor(.gray)
@@ -25,11 +30,22 @@ struct PasswordDetailView: View {
             }
             
             if let notes = password.notes {
-                Section("Notes") {
+                Section("Notas") {
                     Text(notes)
                 }
             }
         }
         .navigationTitle(password.title)
+    }
+    
+    private func authenticateUser() {
+        Task {
+            let success = await BiometricAuthService.authenticate()
+            await MainActor.run {
+                if success {
+                    showPassword = true
+                }
+            }
+        }
     }
 } 
