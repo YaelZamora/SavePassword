@@ -7,7 +7,7 @@ struct AddPasswordView: View {
     @State private var title = ""
     @State private var username = ""
     @State private var password = ""
-    @State private var notes = ""
+    @State private var notes = "Notes"
     @State private var showPassword = false
     
     var body: some View {
@@ -35,8 +35,7 @@ struct AddPasswordView: View {
                     }
                 }
                 
-                TextField("Notes", text: $notes, axis: .vertical)
-                    .lineLimit(4)
+                TextEditor(text: $notes).lineLimit(4).foregroundColor(.gray)
             }
             .navigationTitle("New Password")
             .navigationBarItems(

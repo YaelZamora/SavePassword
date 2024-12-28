@@ -8,8 +8,17 @@ struct PasswordDetailView: View {
     var body: some View {
         Form {
             Section("Detalles") {
-                LabeledContent("Título", value: password.title)
-                LabeledContent("Usuario", value: password.username)
+                HStack {
+                    Text("Título")
+                    Spacer()
+                    Text(password.title).foregroundColor(.gray)
+                }
+                
+                HStack {
+                    Text("Usuario")
+                    Spacer()
+                    Text(password.username).foregroundColor(.gray)
+                }
                 
                 HStack {
                     Text("Contraseña")
